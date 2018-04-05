@@ -1,9 +1,15 @@
 from bs4 import BeautifulSoup
 from urllib import request
-
+import csv
 import re
 
 URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
+COURSE_CODES_FILE = "course_codes.csv"
+COURSE_CODES = []
+
+with open(COURSE_CODES_FILE) as codesfile:
+    codesreader = csv.reader(codesfile)
+    COURSE_CODES = [row[0] for row in codesreader]
 
 def get_soup(course_code):
     html = request.urlopen(URL + course_code)
@@ -69,6 +75,7 @@ def course_can_be_taken(info, history):
     
     
 def is_course_code(string):
-    return len(string) == 8 and \
-            string[:4].isalpha() and \
-            string[4:8].isdigit()
+    return string in COURSE_CODES
+    # return len(string) == 8 and \
+    #        string[:4].isalpha() and \
+    #        string[4:8].isdigit()
