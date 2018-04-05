@@ -25,41 +25,48 @@ def get_course_info(course_code):
     info = {k:v.get_text(strip="True") if v else None for (k,v) in info.items()}
 
     return info
+
 def parse_course_info(info):
-    re.sub(r'(?<=[+,])(?=[^\s])', r' ', info)
-    info = info.replace(',', 'or')
-    info = info.replace('+', 'and')
+    info = info.replace(',', ' or ')
+    info = info.replace('+', ' and ')
 
     words = re.findall(r"[\w']+", info)
-    valid = True
     courses = []
 
     for word in words:
         if is_course_code(word):
             courses.append(word)
-        else:
-            valid = False
-    return info, courses, valid 
+        elif word not in ['or', 'and']:
+            raise ValueError("Unexpected word '" + word + "'  while parsing course info.")
+    return info, courses 
 
-def course_can_be_taken(history, info):
+def satisfies_prerequisite(prerequisite, history):
+    expr, courses = parse_course_info(prerequisite)
+    
+    courses = [course for course in courses if course not in history]
+    courses = {course: False for course in courses}
     history = {course: True for course in history}
+    history.update(courses)
 
-    prereq = info["prerequisite"]
-    incomp = info["incompatible"]
-    
-    _,incomp_courses,_ = parse_course_info(incomp)
-    for course in incomp_courses:
-        if course in history:
-            return False
-    
-    prereq_expr, prereq_courses, prereq_status = parse_course_info(prereq)
-    prereq_courses = [course for course in prereq_courses if course not in history]
-    prereq_courses = {course: False for course in prereq_courses}
-
-    history.update(prereq_courses)
-
-    result = eval(prereq_expr, {}, history)
+    result = eval(expr, {}, history) # WARNING: DANGEROUS FUNCTION
     return result
+
+def is_incompatible(incompatible, history):
+    _,courses = parse_course_info(incompatible)
+    for course in courses:
+        if course in history:
+            return True 
+    return False
+
+def course_can_be_taken(info, history):
+    prerequisite = info["prerequisite"]
+    incompatible = info["incompatible"]
+    
+    if is_incompatible(incompatible, history):
+        return False
+    
+    return satisfies_prerequisite(prerequisite, history)
+    
     
 def is_course_code(string):
     return len(string) == 8 and \

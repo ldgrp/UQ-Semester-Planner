@@ -17,7 +17,7 @@ def main():
     course = input("Course Code: ")
 
     info = get_course_info(course)
-    print(course_can_be_taken(history, info))
+    print(course_can_be_taken(info, history))
     
 if __name__ == "__main__":
     main()
