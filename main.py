@@ -1,4 +1,4 @@
-from query_course import get_course_info
+from course import get_course_info, course_can_be_taken
 
 def input_course_history():
     history = []
@@ -12,8 +12,12 @@ def input_course_history():
 
 def main():
     history = input_course_history()    
-    for course in history:
-        print(course, ": ", get_course_info(course))
+    
+    print("\n\nWhat course do you want to take?")
+    course = input("Course Code: ")
 
+    info = get_course_info(course)
+    print(course_can_be_taken(history, info))
+    
 if __name__ == "__main__":
     main()
