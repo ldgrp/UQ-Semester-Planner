@@ -1,18 +1,8 @@
 from uqsemplanner import app
-import os
-import sqlite3
-from flask import g, redirect, url_for, abort, render_template, flash
 from uqsemplanner.scripts import scrape_courses
 
-app.config.from_envvar('SEMPLANNER_SETTINGS')
-
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'uqsemplanner.db')
-))
-
-#========================================
-# Database
-#========================================
+import sqlite3
+from flask import g, redirect, url_for, abort, render_template, flash
 
 def init_db():
     db = get_db()
@@ -57,8 +47,4 @@ def close_db(error):
     """Closes the database again at the end of the request."""
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
-
-#========================================
-# Views
-#========================================
 

@@ -1,7 +1,7 @@
 from flask import render_template
 
 from uqsemplanner import app
-from uqsemplanner.uqsemplanner import get_db
+from uqsemplanner.database import get_db
 
 @app.route('/')
 def index():
