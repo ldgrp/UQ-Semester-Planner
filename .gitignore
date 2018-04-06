@@ -1,2 +1,3 @@
-__pycache__/*
+uqsemplanner.egg-info/*
+uqsemplanner/__pycache__/*
 history.csv

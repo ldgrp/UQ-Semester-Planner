@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<ul class=courses>
+  {% for entry in entries %}
+  <li>
+      <a href=https://my.uq.edu.au/programs-courses/course.html?course_code={{ entry.code }}>
+          {{ entry.code }}
+      </a>
+      <p>{{ entry.title }}</p>
+  </li>
+  {% else %}
+  <li><em>Courses not populated</em></li>
+  {% endfor %}
+</ul>
+{% endblock %}
