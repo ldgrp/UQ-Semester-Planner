@@ -13,6 +13,7 @@ class Course(Resource):
         title = get_course_title(code)
         return {'code': code, 'title': title}
 
+class CourseChecker(Resource):
     def post(self, code):
         history = None
         code = code.upper()
@@ -25,4 +26,5 @@ class Course(Resource):
         res = course_can_be_taken(info, history)
         return {'course_can_be_taken': res}
 
-api.add_resource(Course, '/api/<string:code>')
+api.add_resource(CourseChecker, '/api/course/')
+api.add_resource(Course, '/api/course/<string:code>')
