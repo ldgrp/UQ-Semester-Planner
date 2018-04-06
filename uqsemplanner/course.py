@@ -24,8 +24,17 @@ def get_course_info(course_code):
     }
 
     info = {k:v.get_text(strip="True") if v else None for (k,v) in info.items()}
-
     return info
+
+def course_can_be_taken(course_code, history):
+    info = get_course_info(course_code)
+    prerequisite = info["prerequisite"]
+    incompatible = info["incompatible"]
+    
+    if is_incompatible(incompatible, history):
+        return False
+    
+    return satisfies_prerequisite(prerequisite, history)
 
 def parse_course_info(info):
     info = info.replace(',', ' or ')
@@ -36,6 +45,8 @@ def parse_course_info(info):
 
     for word in words:
         if is_course_code(word):
+            courses.append(word)
+        elif len(word) == 8 and word[:4].isalpha() and word[4:8].isdigit():
             courses.append(word)
         elif word not in ['or', 'and']:
             raise ValueError("Unexpected word '" + word + "'  while parsing course info.")
@@ -59,11 +70,3 @@ def is_incompatible(incompatible, history):
             return True 
     return False
 
-def course_can_be_taken(info, history):
-    prerequisite = info["prerequisite"]
-    incompatible = info["incompatible"]
-    
-    if is_incompatible(incompatible, history):
-        return False
-    
-    return satisfies_prerequisite(prerequisite, history)

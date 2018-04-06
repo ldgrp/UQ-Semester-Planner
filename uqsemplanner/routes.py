@@ -1,5 +1,5 @@
 from uqsemplanner import app
-from uqsemplanner.course import course_can_be_taken, get_course_info
+from uqsemplanner.course import course_can_be_taken
 from uqsemplanner.database import get_course_title
 
 from flask import abort, request
@@ -23,7 +23,6 @@ class CourseChecker(Resource):
             history = req_data['history']
         else:
             abort(400)
-        info = get_course_info(code)
         res = course_can_be_taken(code, history)
         return {'course_can_be_taken': res}
 
