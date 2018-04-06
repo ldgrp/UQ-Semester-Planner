@@ -14,16 +14,17 @@ class Course(Resource):
         return {'code': code, 'title': title}
 
 class CourseChecker(Resource):
-    def post(self, code):
-        history = None
-        code = code.upper()
+    def post(self):
+        history, code = None, None
+
         req_data = request.get_json(force=True)
-        if 'history' in req_data:
+        if 'history' in req_data and 'code' in req_data:
+            code = req_data['code']
             history = req_data['history']
         else:
             abort(400)
         info = get_course_info(code)
-        res = course_can_be_taken(info, history)
+        res = course_can_be_taken(code, history)
         return {'course_can_be_taken': res}
 
 api.add_resource(CourseChecker, '/api/course/')
