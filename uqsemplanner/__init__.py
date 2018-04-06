@@ -3,4 +3,4 @@ app = Flask(__name__)
 
 import uqsemplanner.config
 import uqsemplanner.database
-import uqsemplanner.views
+import uqsemplanner.routes
