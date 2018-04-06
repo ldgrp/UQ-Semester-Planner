@@ -31,7 +31,6 @@ def populatedb_course_command():
 def connect_db():
     """Connects to the specific database."""
     rv = sqlite3.connect(app.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
     return rv
 
 def get_db():
