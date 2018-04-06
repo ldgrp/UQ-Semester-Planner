@@ -7,5 +7,6 @@ setup(
     install_requires=[
         'beautifulsoup4',
         'flask',
+        'flask-restful'
     ],
 )

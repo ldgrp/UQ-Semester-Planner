@@ -2,7 +2,7 @@ from uqsemplanner import app
 from uqsemplanner.scripts import scrape_courses
 
 import sqlite3
-from flask import g, redirect, url_for, abort, render_template, flash
+from flask import g, abort
 
 def init_db():
     db = get_db()
@@ -31,6 +31,7 @@ def populatedb_course_command():
 def connect_db():
     """Connects to the specific database."""
     rv = sqlite3.connect(app.config['DATABASE'])
+    rv.row_factory = sqlite3.Row
     return rv
 
 def get_db():
@@ -47,3 +48,25 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+#========================================
+#========================================
+
+def is_course_code(code):
+    db = get_db()
+    cur = db.execute('select code from courses where code=?', [code])
+    res = cur.fetchone()
+
+    if res is None:
+        return False
+    return True
+
+def get_course_title(code):
+    db = get_db()
+    cur = db.execute('select title from courses where code=?', [code])
+    res = cur.fetchone()
+    
+    print(res.keys())
+    if res is None:
+        abort(404)
+
+    return res['title']
