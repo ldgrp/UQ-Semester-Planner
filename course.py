@@ -27,25 +27,29 @@ class Course:
             raise ValueError("Course code not found")
 
         self.scrape_conditions(soup)
-        if not self.title():
+        if not self.title:
             scrape_title(soup)
-    def scrape_conditions(self):
-        conditions = [
+    
+    def scrape_conditions(self, soup):
+        condition_ids = [
                 "course-incompatible",
                 "course-prerequisite",
                 "course-recommended-prerequisite"
         ]
-        conditions = [soup.find(id=condition).get_text(strip=True) for condition in conditions]
 
-        incompatibles = IncompatibleCondition(condition[0])
-        prerequisites = PrerequisiteCondition(condition[1])
-        r_prerequisites = PrerequisiteCondition(condition[2])
+        conditions = [soup.find(id=condition_id) for condition_id in condition_ids]
+        conditions = [condition.get_text(strip=True) if condition else None for
+                condition in conditions]
+
+        incompatible = IncompatibleCondition(conditions[0])
+        prerequisite = PrerequisiteCondition(conditions[1])
+        r_prerequisite = PrerequisiteCondition(conditions[2])
 
         self.incompatible = incompatible
         self.prerequisite = prerequisite
-        self.recommended_prerequisite = r_prerequisites
+        self.recommended_prerequisite = r_prerequisite
 
-    def scrape_title(self):
+    def scrape_title(self, soup):
         title = soup.find(id='course-title').get_text(strip=True)
         self.title = title
 
@@ -56,7 +60,8 @@ class CourseCondition:
         self.condition = None
         self.courses = None
 
-        self.parse_raw_condition()
+        if self.raw_condition:
+            self.parse_raw_condition()
 
     def parse_raw_condition(self):
         condition = self.raw_condition
@@ -79,6 +84,8 @@ class CourseCondition:
 
 class PrerequisiteCondition(CourseCondition):
     def evaluate(self, history):
+        if not self.condition:
+            raise Exception()
         courses = [course for course in self.courses if course not in history]
         courses = {course: False for course in courses}
         history = {course: True for course in history}
@@ -93,7 +100,7 @@ class IncompatibleCondition(CourseCondition):
             if course in history:
                 return True
         return False
-        
+
 def scrape():
     soup = get_soup(COURSE_CATALOG_URL)
 
