@@ -35,9 +35,6 @@ class Course:
         return self.prerequisite.evaluate(self, history)
 
 class PrerequisiteCondition(CourseCondition):
-    def __init__(self, raw_condition):
-        super(self, raw_condition)
-
     def evaluate(self, history):
         courses = [course for course in self.courses if course not in history]
         courses = {course: False for course in courses}
@@ -48,9 +45,6 @@ class PrerequisiteCondition(CourseCondition):
         return result
 
 class IncompatibleCondition(CourseCondition):
-    def __init__(self, raw_condition):
-        super(self, raw_condition)
-
     def evaluate(self, history):
         for course in self.courses:
             if course in history:
