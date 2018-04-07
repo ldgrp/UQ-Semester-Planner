@@ -5,10 +5,6 @@ import re
 COURSE_URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
 COURSE_CATALOG_URL = "https://my.uq.edu.au/programs-courses/search.html?keywords=+&searchType=all&archived=true&CourseParameters%5Bsemester%5D=#courses"
 
-def scrape_course_info(course):
-
-    return course
-
 class Course:
     def __init__(self, code, title=None):
         self.code = code
