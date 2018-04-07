@@ -4,6 +4,36 @@ import re
 
 URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
 
+class Course:
+    def __init__(self, code, title):
+        self.code = code
+        self.title = title
+
+        self.prerequisites = None
+        self.incompatibles = None
+        self.recommended_prerequisites = None
+        self.restrictions = None
+    
+    def add_prerequisites(self, prerequisites):
+        pass
+
+    def add_incompatibles(self, incompatibles):
+        pass
+
+    def add_recommended_prerequisites(self, r_prerequisites):
+        pass
+
+    def add_restrictions(self, restrictions):
+        pass
+
+class CourseCondition:
+    def __init__(self, raw_condition):
+        self.raw_condition = raw_condition
+        self.process()
+
+    def process():
+        pass
+
 def get_course_info(course_code):
     soup = get_soup(course_code)
 
