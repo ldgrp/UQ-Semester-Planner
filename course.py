@@ -120,3 +120,10 @@ def is_course_code(string):
      return len(string) == 8 and \
             string[:4].isalpha() and \
             string[4:8].isdigit()
+
+if __name__ == "__main__":
+    courses = scrape()
+    for course in courses:
+        if course.code == "CSSE2310":
+            course.scrape()
+            print(course.prerequisite.condition)
