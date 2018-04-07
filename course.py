@@ -50,23 +50,6 @@ class Course:
         self.title = title
 
 
-class PrerequisiteCondition(CourseCondition):
-    def evaluate(self, history):
-        courses = [course for course in self.courses if course not in history]
-        courses = {course: False for course in courses}
-        history = {course: True for course in history}
-        history.update(courses)
-
-        result = eval(expr, {}, history) # WARNING: DANGEROUS FUNCTION
-        return result
-
-class IncompatibleCondition(CourseCondition):
-    def evaluate(self, history):
-        for course in self.courses:
-            if course in history:
-                return True
-        return False
-        
 class CourseCondition:
     def __init__(self, raw_condition):
         self.raw_condition = raw_condition
@@ -94,6 +77,23 @@ class CourseCondition:
     def evaluate(self, history):
         raise NotImplementedError()
 
+class PrerequisiteCondition(CourseCondition):
+    def evaluate(self, history):
+        courses = [course for course in self.courses if course not in history]
+        courses = {course: False for course in courses}
+        history = {course: True for course in history}
+        history.update(courses)
+
+        result = eval(expr, {}, history) # WARNING: DANGEROUS FUNCTION
+        return result
+
+class IncompatibleCondition(CourseCondition):
+    def evaluate(self, history):
+        for course in self.courses:
+            if course in history:
+                return True
+        return False
+        
 def scrape():
     soup = get_soup(COURSE_CATALOG_URL)
 
