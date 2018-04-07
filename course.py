@@ -1,26 +1,14 @@
-from bs4 import BeautifulSoup
-from urllib import request
+from helpers import get_soup
 import csv
 import re
 
 URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
-COURSE_CODES_FILE = "course_codes.csv"
-COURSE_CODES = []
-
-with open(COURSE_CODES_FILE) as codesfile:
-    codesreader = csv.reader(codesfile)
-    COURSE_CODES = [row[0] for row in codesreader]
-
-def get_soup(course_code):
-    html = request.urlopen(URL + course_code)
-    soup = BeautifulSoup(html.read(), 'html.parser')
-    
-    if soup.find(id="course-notfound"):
-        raise ValueError("Course code not found")
-    return soup
 
 def get_course_info(course_code):
     soup = get_soup(course_code)
+
+    if soup.find(id="course-notfound"):
+        raise ValueError("Course code not found")
     
     info = {
             "incompatible": soup.find(id="course-incompatible"),
