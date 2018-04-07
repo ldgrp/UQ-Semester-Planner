@@ -5,26 +5,29 @@ import re
 URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
 
 class Course:
-    def __init__(self, code, title):
+    def __init__(self, code, title=None):
         self.code = code
         self.title = title
 
-        self.prerequisites = None
-        self.incompatibles = None
-        self.recommended_prerequisites = None
-        self.restrictions = None
+        self.prerequisite = None
+        self.incompatible = None
+        self.recommended_prerequisite = None
+        self.restriction = None
     
-    def add_prerequisites(self, prerequisites):
+    def add_incompatible(self, incompatible):
+        self.incompatible = incompatible
+
+    def add_prerequisite(self, prerequisite):
+        self.prerequisite = prerequisite
+
+    def add_recommended_prerequisite(self, r_prerequisite):
+        self.recommended_prerequisite = r_prerequisite
+
+    def add_restriction(self, restriction):
         pass
 
-    def add_incompatibles(self, incompatibles):
-        pass
-
-    def add_recommended_prerequisites(self, r_prerequisites):
-        pass
-
-    def add_restrictions(self, restrictions):
-        pass
+    def set_title(self, title):
+        self.title = title
 
 class CourseCondition:
     def __init__(self, raw_condition):
