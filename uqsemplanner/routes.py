@@ -26,5 +26,5 @@ class CourseChecker(Resource):
         res = course_can_be_taken(code, history)
         return {'course_can_be_taken': res}
 
-api.add_resource(CourseChecker, '/api/course/')
+api.add_resource(CourseChecker, '/api/course')
 api.add_resource(Course, '/api/course/<string:code>')
