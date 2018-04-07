@@ -37,21 +37,32 @@ class CourseCondition:
     def process():
         pass
 
-def get_course_info(course_code):
-    soup = get_soup(course_code)
+def scrape_course_info(course):
+    soup = get_soup(URL + course.code)
 
     if soup.find(id="course-notfound"):
         raise ValueError("Course code not found")
     
-    info = {
-            "incompatible": soup.find(id="course-incompatible"),
-            "prerequisite": soup.find(id="course-prerequisite"),
-            "recommended-prerequisite": soup.find(id="course-recommended-prerequisite")
-    }
 
-    info = {k:v.get_text(strip="True") if v else None for (k,v) in info.items()}
+    conditions = [
+            "course-incompatible",
+            "course-prerequisite",
+            "course-recommended-prerequisite"
+    ]
+    conditions = [soup.find(id=condition).get_text(strip=True) for condition in conditions]
 
-    return info
+    incompatibles = CourseCondition(condition[0])
+    prerequisites = CourseCondition(condition[1])
+    r_prerequisites = CourseCondition(condition[2])
+
+    title = soup.find(id='course-title').get_text(strip=True)
+    course.set_title(title)
+
+    course.add_incompatible(incompatible)
+    course.add_prerequisite(prerequisite)
+    course.add_recommended_prerequisite(r_prerequisites)
+
+    return course
 
 def parse_course_info(info):
     info = info.replace(',', ' or ')
