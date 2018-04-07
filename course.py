@@ -5,6 +5,10 @@ import re
 COURSE_URL = "https://my.uq.edu.au/programs-courses/course.html?course_code="
 COURSE_CATALOG_URL = "https://my.uq.edu.au/programs-courses/search.html?keywords=+&searchType=all&archived=true&CourseParameters%5Bsemester%5D=#courses"
 
+def scrape_course_info(course):
+
+    return course
+
 class Course:
     def __init__(self, code, title=None):
         self.code = code
@@ -15,25 +19,40 @@ class Course:
         self.recommended_prerequisite = None
         self.restriction = None
     
-    def add_incompatible(self, incompatible):
-        self.incompatible = incompatible
-
-    def add_prerequisite(self, prerequisite):
-        self.prerequisite = prerequisite
-
-    def add_recommended_prerequisite(self, r_prerequisite):
-        self.recommended_prerequisite = r_prerequisite
-
-    def add_restriction(self, restriction):
-        pass
-
-    def set_title(self, title):
-        self.title = title
-
     def can_be_taken(self, history):
         if self.incompatible.evaluate(self, history):
             return False
         return self.prerequisite.evaluate(self, history)
+
+    def scrape(self):
+        soup = get_soup(COURSE_URL + self.code)
+
+        if soup.find(id="course-notfound"):
+            raise ValueError("Course code not found")
+
+        self.scrape_conditions(soup)
+        if not self.title():
+            scrape_title(soup)
+    def scrape_conditions(self):
+        conditions = [
+                "course-incompatible",
+                "course-prerequisite",
+                "course-recommended-prerequisite"
+        ]
+        conditions = [soup.find(id=condition).get_text(strip=True) for condition in conditions]
+
+        incompatibles = IncompatibleCondition(condition[0])
+        prerequisites = PrerequisiteCondition(condition[1])
+        r_prerequisites = PrerequisiteCondition(condition[2])
+
+        self.incompatible = incompatible
+        self.prerequisite = prerequisite
+        self.recommended_prerequisite = r_prerequisites
+
+    def scrape_title(self):
+        title = soup.find(id='course-title').get_text(strip=True)
+        self.title = title
+
 
 class PrerequisiteCondition(CourseCondition):
     def evaluate(self, history):
@@ -93,33 +112,6 @@ def scrape():
         courses.append(course)
 
     return courses
-
-def scrape_course_info(course):
-    soup = get_soup(COURSE_URL + course.code)
-
-    if soup.find(id="course-notfound"):
-        raise ValueError("Course code not found")
-    
-
-    conditions = [
-            "course-incompatible",
-            "course-prerequisite",
-            "course-recommended-prerequisite"
-    ]
-    conditions = [soup.find(id=condition).get_text(strip=True) for condition in conditions]
-
-    incompatibles = IncompatibleCondition(condition[0])
-    prerequisites = PrerequisiteCondition(condition[1])
-    r_prerequisites = PrerequisiteCondition(condition[2])
-
-    title = soup.find(id='course-title').get_text(strip=True)
-    course.set_title(title)
-
-    course.add_incompatible(incompatible)
-    course.add_prerequisite(prerequisite)
-    course.add_recommended_prerequisite(r_prerequisites)
-
-    return course
 
 def is_course_code(string):
      return len(string) == 8 and \
