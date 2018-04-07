@@ -65,7 +65,6 @@ def get_course_title(code):
     cur = db.execute('select title from courses where code=?', [code])
     res = cur.fetchone()
     
-    print(res.keys())
     if res is None:
         abort(404)
 
