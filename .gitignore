@@ -1,2 +1,7 @@
 **/__pycache__/*
+<<<<<<< HEAD
 history.csv
+=======
+**/*.db
+uqsemplanner.egg-info/*
+>>>>>>> flask
