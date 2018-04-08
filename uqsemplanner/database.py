@@ -28,6 +28,28 @@ def populatedb_course_command():
     db.commit()
     print('Populated database with courses')
 
+@app.cli.command('populatedb_program')
+def populatedb_program_command():
+    programs = scripts.program.scrape()
+    majors = {}
+
+    db = get_db()
+    db.execute('delete from majors')
+    db.execute('delete from programs')
+
+    for program in programs:
+        db.execute('insert into programs (code, title) values (?, ?)',
+                [program.code, program.title])
+        majors[program.code] = program.get_majors()
+
+    for pcode, majorlist in majors.items():
+        for major in majorlist:
+            db.execute('insert into majors (code, title, pcode) values (?, ?, ?)',
+                    [major.code, major.title, pcode])
+
+    db.commit()
+    print('Populated database with programs and majors')
+
 def connect_db():
     """Connects to the specific database."""
     rv = sqlite3.connect(app.config['DATABASE'])
@@ -69,3 +91,19 @@ def get_course_title(code):
         abort(404)
 
     return res['title']
+
+def get_program(code):
+    db = get_db()
+    cur = db.execute('select * from programs where code=?', [code])
+    res = cur.fetchone()
+    if res is None:
+        abort(404)
+    return res
+
+def get_major(code):
+    db = get_db()
+    cur = db.execute('select * from majors where code=?', [code])
+    res = cur.fetchone()
+    if res is None:
+        abort(404)
+    return res
