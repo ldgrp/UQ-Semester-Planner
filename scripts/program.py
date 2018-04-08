@@ -1,4 +1,5 @@
 from helpers import get_soup
+import csv
 import re
 
 URL = 'https://my.uq.edu.au/programs-courses/browse.html?level=ugpg' 
@@ -52,9 +53,23 @@ def scrape():
 
     return programs
 
+PROGRAMS_FILE = 'output/programs.csv'
+MAJORS_FILE = 'output/majors.csv'
+
 if __name__ == "__main__":
     programs = scrape()
-    for program in programs:
-        print("{}-{}".format(program.code, program.title))
-        for major in program.get_majors():
-            print("\t{}".format(major.title))
+    majors = {}
+
+    with open(PROGRAMS_FILE, 'w') as programfile:
+        programwrite = csv.writer(programfile)
+        for program in programs:
+            programwrite.writerow([program.code, program.title])
+            majors[program.code] = program.get_majors()
+    with open(MAJORS_FILE, 'w') as majorfile:
+        majorwrite = csv.writer(majorfile)
+        for pcode, majorlist in majors.items():
+            for major in majorlist:
+                majorwrite.writerow([major.code, major.title, pcode])
+
+    print("UQ Program List output to ", PROGRAMS_FILE)
+    print("UQ Majors List output to", MAJORS_FILE)
