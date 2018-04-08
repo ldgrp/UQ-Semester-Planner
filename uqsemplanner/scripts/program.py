@@ -20,6 +20,12 @@ class Program:
     def get_majors(self):
         return self.majors
 
+    def __hash__(self):
+        return hash((self.code, self.title))
+
+    def __eq__(self, other):
+        return self.code == other.code
+
 class Major:
     def __init__(self, code, title):
         self.code = code
@@ -51,7 +57,7 @@ def scrape():
         program.add_majors(program_majors)
         programs.append(program)
 
-    return programs
+    return set(programs)
 
 PROGRAMS_FILE = 'output/programs.csv'
 MAJORS_FILE = 'output/majors.csv'
