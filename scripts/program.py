@@ -7,26 +7,26 @@ class Program:
     def __init__(self, code, title):
         self.code = code
         self.title = title
-        self.plans = []
+        self.majors = []
 
-    def add_plan(self, plan):
-        self.plans.append(plan)
+    def add_major(self, major):
+        self.majors.append(major)
 
-    def add_plans(self, plans):
-        for plan in plans:
-            self.add_plan(plan)
+    def add_majors(self, majors):
+        for major in majors:
+            self.add_major(major)
 
-    def get_plans(self):
-        return self.plans
+    def get_majors(self):
+        return self.majors
 
-class Plan:
+class Major:
     def __init__(self, code, title):
         self.code = code
         self.title = title
 
 def scrape():
     programs = []
-    plans = [] 
+    majors = [] 
 
     soup = get_soup(URL) 
     a_acad_prog = soup.findAll('a', href=re.compile('acad_prog'))
@@ -36,8 +36,8 @@ def scrape():
         url = a['href']
         code = url[url.index('=')+1:]
         title = a.get_text(strip=True)
-        plan = Plan(code, title)
-        plans.append(plan)
+        major = Major(code, title)
+        majors.append(major)
 
     for a in a_acad_prog:
         url = a['href']
@@ -46,8 +46,8 @@ def scrape():
 
         program = Program(code, title)
 
-        majors = [plan for plan in plans if code in plan.code]
-        program.add_plans(majors)
+        program_majors = [major for major in majors if code in major.code]
+        program.add_majors(program_majors)
         programs.append(program)
 
     return programs
@@ -56,5 +56,5 @@ if __name__ == "__main__":
     programs = scrape()
     for program in programs:
         print("{}-{}".format(program.code, program.title))
-        for plan in program.get_plans():
-            print("\t{}".format(plan.title))
+        for major in program.get_majors():
+            print("\t{}".format(major.title))
