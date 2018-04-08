@@ -1,5 +1,5 @@
 from uqsemplanner import app
-from uqsemplanner.database import get_course_title
+from uqsemplanner.database import get_course_title, get_program, get_major
 
 from flask import abort, request
 from flask_restful import Api, Resource
@@ -12,6 +12,16 @@ class Course(Resource):
         title = get_course_title(code)
         return {'code': code, 'title': title}
 
+class Program(Resource):
+    def get(self, code):
+        program = get_program(code)
+        return {'code': program['code'], 'title': program['title']}
+
+class Major(Resource):
+    def get(self, code):
+        major = get_major(code)
+        return {'code': major['code'], 'title': major['title'], 'program':
+                major['pcode']}
 #class CourseChecker(Resource):
 #    def post(self):
 #        history, code = None, None
@@ -27,3 +37,5 @@ class Course(Resource):
 #
 #api.add_resource(CourseChecker, '/api/course')
 api.add_resource(Course, '/api/course/<string:code>')
+api.add_resource(Program, '/api/program/<string:code>')
+api.add_resource(Major, '/api/major/<string:code>')
