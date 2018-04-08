@@ -121,9 +121,13 @@ def is_course_code(string):
             string[:4].isalpha() and \
             string[4:8].isdigit()
 
+COURSES_FILE = 'output/courses.csv'
+
 if __name__ == "__main__":
     courses = scrape()
-    for course in courses:
-        if course.code == "CSSE2310":
-            course.scrape()
-            print(course.prerequisite.condition)
+    with open(COURSES_FILE, 'w') as coursefile:
+        coursewriter = csv.writer(coursefile)
+        for course in courses:
+            coursewriter.writerow([course.code, course.title])
+
+    print("UQ Course List output to ", COURSES_FILE)
