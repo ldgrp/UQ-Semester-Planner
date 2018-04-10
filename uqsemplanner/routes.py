@@ -15,13 +15,13 @@ class Course(Resource):
 class Program(Resource):
     def get(self, code):
         program = get_program(code)
-        return {'code': program['code'], 'title': program['title']}
+        return {'code': program.code, 'title': program.title}
 
 class Major(Resource):
     def get(self, code):
         major = get_major(code)
-        return {'code': major['code'], 'title': major['title'], 'program':
-                major['pcode']}
+        return {'code': major.code, 'title': major.title, 'program':
+                major.pcode}
 #class CourseChecker(Resource):
 #    def post(self):
 #        history, code = None, None
